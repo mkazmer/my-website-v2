@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import type { NavLink } from '@/types'
 
 export default function MobileNav({ links }: { links: NavLink[] }) {
@@ -30,7 +30,7 @@ export default function MobileNav({ links }: { links: NavLink[] }) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed top-0 right-0 h-full w-64 bg-surface border-l border-border z-[101] flex flex-col p-6"
+            className="fixed top-0 right-0 h-full w-54 bg-surface border-l border-border z-[101] flex flex-col p-6"
           >
             <button
               onClick={() => setOpen(false)}
@@ -66,9 +66,13 @@ export default function MobileNav({ links }: { links: NavLink[] }) {
       <button
         onClick={() => setOpen(true)}
         aria-label="Open menu"
-        className="p-2 text-text hover:text-accent transition-colors"
+        className="group pb-4 pl-2 text-text hover:text-accent transition-colors"
       >
-        <Menu size={22} />
+        <div className="flex flex-col gap-[5px] w-[18px]">
+          <span className="block h-[2px] w-full bg-current" />
+          <span className="block h-[2px] w-[13px] bg-current ml-auto transition-[width] duration-300 ease-in-out group-hover:w-full" />
+          <span className="block h-[2px] w-[8px] bg-current ml-auto transition-[width] duration-300 ease-in-out group-hover:w-full" />
+        </div>
       </button>
 
       {typeof document !== 'undefined' && createPortal(overlay, document.body)}
