@@ -7,7 +7,6 @@ const links: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/music', label: 'Music' },
-  { href: '/projects', label: 'Projects' },
 ]
 
 export default function Nav() {
