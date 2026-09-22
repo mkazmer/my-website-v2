@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { NavLink } from '@/types'
 import MobileNav from './MobileNav'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 const links: NavLink[] = [
   { href: '/', label: 'Home' },
@@ -20,22 +21,26 @@ export default function Nav() {
           Mike Kazmer
         </Link>
 
-        {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-8">
-          {links.map(({ href, label }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="text-sm font-medium text-text-muted hover:text-text transition-colors"
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center gap-4">
+          {/* Desktop links */}
+          <ul className="hidden md:flex items-center gap-8">
+            {links.map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="text-sm font-medium text-text-muted hover:text-text transition-colors"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-        {/* Mobile hamburger */}
-        <MobileNav links={links} />
+          <ThemeToggle />
+
+          {/* Mobile hamburger */}
+          <MobileNav links={links} />
+        </div>
       </nav>
     </header>
   )

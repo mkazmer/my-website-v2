@@ -24,17 +24,15 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #09090b;
-    --bg-subtle: #18181b;
-    --surface: #1c1c1e;
-    --border: #27272a;
-    --text: #fafafa;
-    --text-muted: #a1a1aa;
-    --accent: #818cf8;
-    --accent-hover: #6366f1;
-  }
+.dark {
+  --bg: #09090b;
+  --bg-subtle: #18181b;
+  --surface: #1c1c1e;
+  --border: #27272a;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --accent: #818cf8;
+  --accent-hover: #6366f1;
 }
 
 html {
