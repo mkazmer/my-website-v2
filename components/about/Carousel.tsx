@@ -7,11 +7,20 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const slides = [
   {
+    src: '/images/about/travel.png',
+    alt: 'Travel',
+    label: 'Travel',
+    title: 'Always Exploring',
+    subtitle: 'Lifelong Learner',
+    description:
+      "I've lived and traveled across the U.S., and currently call Boston home. Exploring new places, meeting new people, and experiencing different perspectives keeps me curious—something I bring to web development by always looking for new ideas, approaches, and ways to improve.",
+  },
+  {
     src: '/images/about/gaming.png',
     alt: 'Gaming setup',
     label: 'Gaming',
-    title: 'Think Different',
-    subtitle: 'Gaming / Creative Problem-Solving',
+    title: 'Up for the Challenge',
+    subtitle: 'Creative Problem-Solving',
     description:
       "I've always been a casual gamer, but I've developed a particular love for tabletop games and the strategy, creativity, and social interaction they bring. I enjoy approaching problems from different angles and finding creative solutions, whether it's across a game board or while building an intuitive web experience.",
   },
@@ -20,21 +29,12 @@ const slides = [
     alt: 'Music',
     label: 'Music',
     title: 'Create & Build',
-    subtitle: 'Music / Artistically Minded',
+    subtitle: 'Artistically Minded',
     description:
       "I started playing bass at 14 and have been creating music ever since. There's something incredibly rewarding about taking an idea and turning it into something people can experience—whether that's playing live, improvising with a band, or bringing an idea to life through thoughtful web design and development.",
   },
   {
-    src: '/images/about/travel.png',
-    alt: 'Travel',
-    label: 'Travel',
-    title: 'Always Exploring',
-    subtitle: 'Travel / Lifelong Learner',
-    description:
-      "I've lived and traveled across the U.S., and currently call Boston home. Exploring new places, meeting new people, and experiencing different perspectives keeps me curious—something I bring to web development by always looking for new ideas, approaches, and ways to improve.",
-  },
-  {
-    src: '/images/avatar_thumb_color.jpg',
+    src: '/images/avatar_color.png',
     alt: 'Team leadership',
     label: 'Leadership',
     title: 'Helping Others Grow',
@@ -65,12 +65,14 @@ const textVariants = {
   exit: { opacity: 0, y: -16 },
 }
 
-const AUTO_INTERVAL = 10_000
+const AUTO_INTERVAL = 15_000
+const INTERACTION_PAUSE = 30_000
 
 export default function Carousel() {
   const [[index, direction], setSlide] = useState([0, 0])
   const dragRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const paginate = useCallback((newDirection: number) => {
     setSlide(([prev]) => [
@@ -83,32 +85,40 @@ export default function Carousel() {
     setSlide(([prev]) => [i, i > prev ? 1 : -1])
   }, [])
 
-  const resetTimer = useCallback(() => {
+  const startAutoPlay = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(() => paginate(1), AUTO_INTERVAL)
   }, [paginate])
 
+  // After user interaction: stop auto-cycle, then resume after INTERACTION_PAUSE
+  const resetTimerAfterInteraction = useCallback(() => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => startAutoPlay(), INTERACTION_PAUSE)
+  }, [startAutoPlay])
+
   useEffect(() => {
-    resetTimer()
+    startAutoPlay()
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
+      if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [resetTimer])
+  }, [startAutoPlay])
 
   const handleDragEnd = useCallback(
     (_: unknown, info: PanInfo) => {
-      if (info.offset.x < -50) { paginate(1); resetTimer() }
-      else if (info.offset.x > 50) { paginate(-1); resetTimer() }
+      if (info.offset.x < -50) { paginate(1); resetTimerAfterInteraction() }
+      else if (info.offset.x > 50) { paginate(-1); resetTimerAfterInteraction() }
       requestAnimationFrame(() => {
         dragRef.current = false
       })
     },
-    [paginate, resetTimer],
+    [paginate, resetTimerAfterInteraction],
   )
 
   const handleClick = useCallback(() => {
-    if (!dragRef.current) { paginate(1); resetTimer() }
-  }, [paginate, resetTimer])
+    if (!dragRef.current) { paginate(1); resetTimerAfterInteraction() }
+  }, [paginate, resetTimerAfterInteraction])
 
   const slide = slides[index]
 
@@ -154,20 +164,13 @@ export default function Carousel() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Label chip bottom-left */}
-          <div className="absolute bottom-4 left-5 z-10 pointer-events-none">
-            <span className="text-xs font-semibold uppercase tracking-widest text-white/70">
-              {slide.label}
-            </span>
-          </div>
-
           {/* Prev arrow */}
           <button
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 hidden md:flex items-center justify-center w-9 h-9 rounded-full bg-black/30 text-white backdrop-blur-sm border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-black/50 hover:scale-105"
             onClick={(e) => {
               e.stopPropagation()
               paginate(-1)
-              resetTimer()
+              resetTimerAfterInteraction()
             }}
             aria-label="Previous slide"
           >
@@ -180,7 +183,7 @@ export default function Carousel() {
             onClick={(e) => {
               e.stopPropagation()
               paginate(1)
-              resetTimer()
+              resetTimerAfterInteraction()
             }}
             aria-label="Next slide"
           >
@@ -193,7 +196,7 @@ export default function Carousel() {
           {slides.map((_, i) => (
             <button
               key={i}
-              onClick={() => { goTo(i); resetTimer() }}
+              onClick={() => { goTo(i); resetTimerAfterInteraction() }}
               className={`rounded-full transition-all duration-300 ${
                 i === index
                   ? 'w-6 h-[6px] bg-accent'
