@@ -10,9 +10,6 @@ export default function AboutPage() {
         <p className="text-xs font-semibold uppercase tracking-widest text-accent mb-3">
           About Me
         </p>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-text">
-          A few things I love
-        </h1>
       </div>
       <Carousel />
     </section>
