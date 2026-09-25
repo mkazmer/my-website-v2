@@ -19,8 +19,8 @@ export default function HomePage() {
             <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-text">
               Mike Kazmer
             </h1>
-            <p className="text-xl text-text-muted mt-6 max-w-[350px] sm:max-w-[475px]">
-              Building thoughtful web experiences and melodic bass lines.
+            <p className="text-xl text-text-muted mt-6 max-w-[350px] sm:max-w-[500px]">
+              Building thoughtful web experiences, intuitive UIs and melodic bass lines.
             </p>
           </div>
 

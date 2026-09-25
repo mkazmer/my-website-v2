@@ -15,10 +15,10 @@ interface Orb {
 const LIGHT_COLORS = ['#6366f1', '#7c3aed', '#38bdf8', '#f472b6', '#818cf8', '#34d399']
 const DARK_COLORS  = ['#818cf8', '#a78bfa', '#7dd3fc', '#f9a8d4', '#6366f1', '#6ee7b7']
 const ORB_COUNT = 10
-const MOUSE_RADIUS = 280
-const MOUSE_FORCE = 0.018
-const SPEED = 0.35
-const DECAY = 0.985
+const MOUSE_RADIUS = 220
+const MOUSE_FORCE = 0.22
+const SPEED = 0.6
+const DECAY = 0.982
 
 export default function OrbBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -59,17 +59,15 @@ export default function OrbBackground() {
     }
 
     function drawOrb(orb: Orb) {
-      const colors = isDark() ? DARK_COLORS : LIGHT_COLORS
-      // re-assign color from palette based on stable index isn't possible here — we just use stored color
+      const scale = isDark() ? 1 : 2.6
       const grad = ctx!.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius)
-      grad.addColorStop(0, hexToRgba(orb.color, orb.opacity * 1.6))
-      grad.addColorStop(0.45, hexToRgba(orb.color, orb.opacity))
+      grad.addColorStop(0, hexToRgba(orb.color, orb.opacity * 1.6 * scale))
+      grad.addColorStop(0.45, hexToRgba(orb.color, orb.opacity * scale))
       grad.addColorStop(1, hexToRgba(orb.color, 0))
       ctx!.beginPath()
       ctx!.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2)
       ctx!.fillStyle = grad
       ctx!.fill()
-      void colors // consumed above indirectly via isDark; suppress lint
     }
 
     function tick() {
@@ -84,8 +82,8 @@ export default function OrbBackground() {
 
         if (dist < MOUSE_RADIUS && dist > 1) {
           const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS * MOUSE_FORCE
-          orb.vx += (dx / dist) * force
-          orb.vy += (dy / dist) * force
+          orb.vx -= (dx / dist) * force
+          orb.vy -= (dy / dist) * force
         }
 
         orb.vx *= DECAY

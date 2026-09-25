@@ -13,7 +13,7 @@ const slides = [
     title: 'Always Exploring',
     subtitle: 'Lifelong Learner',
     description:
-      "I've lived and traveled across the U.S., and currently call Boston home. Exploring new places, meeting new people, and experiencing different perspectives keeps me curious—something I bring to web development by always looking for new ideas, approaches, and ways to improve.",
+      "I've lived and traveled across the U.S., and currently call Salem MA home. Exploring new places, meeting new people, and experiencing different perspectives keeps me curious—something I bring to web development by always looking for new ideas, approaches, and ways to improve.",
   },
   {
     src: '/images/about/gaming.png',
@@ -70,6 +70,7 @@ const INTERACTION_PAUSE = 30_000
 
 export default function Carousel() {
   const [[index, direction], setSlide] = useState([0, 0])
+  const [imgLoaded, setImgLoaded] = useState(false)
   const dragRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -104,6 +105,8 @@ export default function Carousel() {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [startAutoPlay])
+
+  useEffect(() => { setImgLoaded(false) }, [index])
 
   const handleDragEnd = useCallback(
     (_: unknown, info: PanInfo) => {
@@ -158,7 +161,14 @@ export default function Carousel() {
                 sizes="(max-width: 768px) 100vw, 448px"
                 className="object-cover pointer-events-none"
                 priority={index === 0}
+                onLoad={() => setImgLoaded(true)}
               />
+              {/* Loading spinner */}
+              {!imgLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-bg-subtle/60 backdrop-blur-sm pointer-events-none">
+                  <div className="w-8 h-8 rounded-full border-2 border-text-muted/30 border-t-text-muted animate-spin" />
+                </div>
+              )}
               {/* Gradient scrim */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
             </motion.div>
