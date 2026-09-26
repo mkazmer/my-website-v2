@@ -19,14 +19,17 @@ export default function HomePage() {
             <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-text">
               Mike Kazmer
             </h1>
-            <p className="text-xl text-text-muted mt-6 max-w-[350px] sm:max-w-[500px]">
+            <p className="text-xl text-text-muted mt-6 max-w-[350px] sm:max-w-[475px]">
               Building thoughtful web experiences, intuitive UIs and melodic bass lines.
             </p>
           </div>
 
           {/* Avatar */}
           <div className="flex justify-center md:justify-end shrink-0">
-            <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full overflow-hidden">
+            <div
+              className="relative w-80 h-80 sm:w-[340px] sm:h-[340px] md:w-[380px] md:h-[380px]"
+              style={{ maskImage: 'radial-gradient(circle closest-side at center, black 92%, transparent 100%)' }}
+            >
               <Image
                 src="/images/avatar_color.png"
                 alt="Mike Kazmer"

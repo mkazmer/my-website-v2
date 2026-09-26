@@ -13,7 +13,7 @@ const slides = [
     title: 'Always Exploring',
     subtitle: 'Lifelong Learner',
     description:
-      "I've lived and traveled across the U.S., and currently call Salem MA home. Exploring new places, meeting new people, and experiencing different perspectives keeps me curious—something I bring to web development by always looking for new ideas, approaches, and ways to improve.",
+      "I've lived and traveled across the U.S. and currently call Salem, MA home. Exploring new places, meeting new people and experiencing different perspectives keeps me curious—something I bring to web development by always looking for new ideas, approaches and ways to improve.",
   },
   {
     src: '/images/about/gaming.png',
@@ -22,13 +22,13 @@ const slides = [
     title: 'Up for the Challenge',
     subtitle: 'Creative Problem-Solving',
     description:
-      "I've always been a casual gamer, but I've developed a particular love for tabletop games and the strategy, creativity, and social interaction they bring. I enjoy approaching problems from different angles and finding creative solutions, whether it's across a game board or while building an intuitive web experience.",
+      "I've always been a casual gamer, but I've developed a particular love for tabletop games and the strategy, creativity and social interaction they bring. I enjoy approaching problems from different angles and finding creative solutions, whether it's across a game board or while building an intuitive web experience.",
   },
   {
     src: '/images/about/music.jpg',
     alt: 'Music',
     label: 'Music',
-    title: 'Create & Build',
+    title: 'Creating & Building',
     subtitle: 'Artistically Minded',
     description:
       "I started playing bass at 14 and have been creating music ever since. There's something incredibly rewarding about taking an idea and turning it into something people can experience—whether that's playing live, improvising with a band, or bringing an idea to life through thoughtful web design and development.",

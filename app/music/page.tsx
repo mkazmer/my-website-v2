@@ -27,7 +27,7 @@ const bands = [
   {
     name: 'Vayden',
     description:
-      'Nu-metal band with classic rock influences and driving energy. We toured nationally and internationally while signed to Silent Majority Group, opening for Candlebox, Tantric, and Drowning Pool.',
+      'Nu-metal band with classic rock influences and driving energy. We toured nationally and internationally while signed to Silent Majority Group, opening for Candlebox, Tantric and Drowning Pool.',
     spotify: 'https://open.spotify.com/album/0xsT0ZeMrSMW2xTyeBp7j9?si=ZOpw_wKjQImaFE-A-60lyQ',
   },
   {
@@ -39,7 +39,7 @@ const bands = [
   {
     name: 'Housmans Athletes',
     description:
-      'A party rock band (though we preferred the term "hardcore pop") influenced equally by metal and country. Shared the festival stage with Rise Against, Alkaline Trio, NOFX, and Flogging Molly.',
+      'A party rock band (though we preferred the term "hardcore pop") influenced equally by metal and country. Shared the festival stage with Rise Against, Alkaline Trio, NOFX and Flogging Molly.',
     spotify: 'https://open.spotify.com/album/3cH8b9TjJKPbA9ZI5MWOut?si=gk1V_BQWSZi6u8yGaWMv-w',
   },
 ]
@@ -94,7 +94,7 @@ export default function MusicPage() {
       {/* Page content */}
       <div className="mt-16 max-w-5xl mx-auto px-6 pb-24 text-center">
         <p className="text-lg font-semibold max-w-2xl mx-auto">
-          I&apos;ve been lucky enough to play in many bands over the years, and here are a few of my favorites.
+          I&apos;ve been lucky enough to play in many bands over the years and here are a few of my favorites.
         </p>
 
         <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
