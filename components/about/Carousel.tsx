@@ -1,8 +1,15 @@
 'use client'
 
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect, type PointerEvent } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion'
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type PanInfo,
+} from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const slides = [
@@ -68,12 +75,54 @@ const textVariants = {
 const AUTO_INTERVAL = 15_000
 const INTERACTION_PAUSE = 30_000
 
+const HOVER_SCALE = 1.08
+// Fraction of the overflow created by HOVER_SCALE that the parallax may use,
+// so the image edges never show inside the frame.
+const PARALLAX_STRENGTH = 0.6
+const parallaxSpring = { stiffness: 150, damping: 20, mass: 0.5 }
+
 export default function Carousel() {
   const [[index, direction], setSlide] = useState([0, 0])
   const [imgLoaded, setImgLoaded] = useState(false)
   const dragRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Hover parallax: pointer position normalized to -1..1 from the track center
+  const reduceMotion = useReducedMotion()
+  const pointerX = useSpring(0, parallaxSpring)
+  const pointerY = useSpring(0, parallaxSpring)
+  const imgScale = useSpring(1, parallaxSpring)
+  // Shift is tied to the current scale, so it can't outrun the available overflow
+  // while the zoom is still easing in/out. Percent is of the image's own size.
+  const imgX = useTransform([pointerX, imgScale], ([px, s]: number[]) =>
+    `${-px * ((s - 1) / 2) * 100 * PARALLAX_STRENGTH}%`,
+  )
+  const imgY = useTransform([pointerY, imgScale], ([py, s]: number[]) =>
+    `${-py * ((s - 1) / 2) * 100 * PARALLAX_STRENGTH}%`,
+  )
+  const hoverActiveRef = useRef(false)
+
+  const handlePointerMove = useCallback(
+    (e: PointerEvent<HTMLDivElement>) => {
+      if (reduceMotion || e.pointerType !== 'mouse') return
+      const rect = e.currentTarget.getBoundingClientRect()
+      pointerX.set(((e.clientX - rect.left) / rect.width) * 2 - 1)
+      pointerY.set(((e.clientY - rect.top) / rect.height) * 2 - 1)
+      if (!hoverActiveRef.current) {
+        hoverActiveRef.current = true
+        imgScale.set(HOVER_SCALE)
+      }
+    },
+    [reduceMotion, pointerX, pointerY, imgScale],
+  )
+
+  const handlePointerLeave = useCallback(() => {
+    hoverActiveRef.current = false
+    pointerX.set(0)
+    pointerY.set(0)
+    imgScale.set(1)
+  }, [pointerX, pointerY, imgScale])
 
   const paginate = useCallback((newDirection: number) => {
     setSlide(([prev]) => [
@@ -134,6 +183,8 @@ export default function Carousel() {
           className="relative w-full overflow-hidden rounded-2xl cursor-pointer group select-none"
           style={{ aspectRatio: '4/3' }}
           onClick={handleClick}
+          onPointerMove={handlePointerMove}
+          onPointerLeave={handlePointerLeave}
         >
           <AnimatePresence initial={false} custom={direction}>
             <motion.div
@@ -154,15 +205,21 @@ export default function Carousel() {
               className="absolute inset-0"
               style={{ touchAction: 'pan-y' }}
             >
-              <Image
-                src={slide.src}
-                alt={slide.alt}
-                fill
-                sizes="(max-width: 768px) 100vw, 448px"
-                className="object-cover pointer-events-none"
-                priority={index === 0}
-                onLoad={() => setImgLoaded(true)}
-              />
+              {/* Parallax layer — kept separate from the sliding/draggable parent */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                style={{ x: imgX, y: imgY, scale: imgScale }}
+              >
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 448px"
+                  className="object-cover"
+                  priority={index === 0}
+                  onLoad={() => setImgLoaded(true)}
+                />
+              </motion.div>
               {/* Loading spinner */}
               {!imgLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center bg-bg-subtle/60 backdrop-blur-sm pointer-events-none">
@@ -170,8 +227,7 @@ export default function Carousel() {
                 </div>
               )}
               {/* Gradient scrim */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-            </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />            </motion.div>
           </AnimatePresence>
 
           {/* Prev arrow */}
